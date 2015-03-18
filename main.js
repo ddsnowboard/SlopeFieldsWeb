@@ -1,47 +1,50 @@
-function drawGrid(canvas, maxX, maxY, resolution) {
+function drawLine(canvas, x1, y1, x2, y2) {
 	var STROKE_WIDTH = 2;
 	var STROKE_STYLE = "black";
+	canvas.drawLine({
+		strokeStyle : STROKE_STYLE,
+		strokeWidth : STROKE_WIDTH,
+		x1 : x1,
+		y1 : y1,
+		x2 : x2,
+		y2 : y2,
+	});
+}
+function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
 	var TICK_LENGTH = 10;
 	var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
+	var origin = {
+		x : (Math.abs(minX) / (maxX - minX)) * width,
+		y : (Math.abs(maxY) / (maxY - minY)) * height
+	};
 	// Draw horizontal line.
-	canvas.drawLine({
-		strokeStyle : STROKE_STYLE,
-		strokeWidth : STROKE_WIDTH,
-		x1 : 0,
-		y1 : height / 2,
-		x2 : width,
-		y2 : height / 2
-	});
+	drawLine(canvas, 0, origin.y, width, origin.y);
+
 	// Draw vertical line.
-	canvas.drawLine({
-		strokeStyle : STROKE_STYLE,
-		strokeWidth : STROKE_WIDTH,
-		x1 : width / 2,
-		y1 : 0,
-		x2 : width / 2,
-		y2 : height
-	});
+	drawLine(canvas, origin.x, 0, origin.x, height);
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// Draw tick marks
+	// DRAW TICKS FROM ORIGIN NOT FROM EDGE, YOU LAZY BUM!
 	for (var i = 0; i <= resolution; i++) {
-		canvas.drawLine({
-			strokeStyle : STROKE_STYLE,
-			strokeWidth : STROKE_WIDTH,
-			x1 : i * (width / resolution),
-			y1 : height / 2 + TICK_LENGTH / 2,
-			x2 : i * (width / resolution),
-			y2 : height / 2 - TICK_LENGTH / 2
-		});
+		drawLine(canvas, i* (width/resolution), origin.y-TICK_LENGTH, i*(width/resolution), origin.y+TICK_LENGTH);
 	}
 	for (var i = 0; i <= resolution; i++) {
-		canvas.drawLine({
-			strokeStyle : STROKE_STYLE,
-			strokeWidth : STROKE_WIDTH,
-			x1 : width / 2 + TICK_LENGTH / 2,
-			y1 : i * (height / resolution),
-			x2 : width / 2 - TICK_LENGTH / 2,
-			y2 : i * (height / resolution)
-		});
+		drawLine(canvas, origin.x-TICK_LENGTH,i* (height/resolution), origin.x+TICK_LENGTH, i*(height/resolution));
 	}
 }
 function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
@@ -51,7 +54,7 @@ function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
 	var OFFSET = 15;
 	var FONT_SIZE = 8;
 	var FONT_FAMILY = "Verdana, Geneva, sans-serif";
-		var height = canvas.height() - 20;
+	var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
 	for (var i = 0; i <= resolution; i++) {
 		canvas.drawText({
@@ -89,12 +92,13 @@ $(document).ready(function () {
 	canvas.height = $(window).height() * 0.8;
 	canvas.width = canvas.height;
 	$("#draw").click(function () {
+		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
 		var eqn = math.compile($("#equation").val());
 		var minX = parseInt($("#minx").val());
 		var minY = parseInt($("#miny").val());
 		drawGrid(jcanvas, minX, maxX, minY, maxY, RESOLUTION);
-		graph(jcanvas, eqn, minX, maxX, minY, maxY, RESOLUTION);
+		// graph(jcanvas, eqn, minX, maxX, minY, maxY, RESOLUTION);
 	});
 });
