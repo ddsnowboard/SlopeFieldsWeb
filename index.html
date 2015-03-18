@@ -3,11 +3,49 @@
         <meta name="generator"
         content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
         <link rel="stylesheet" type="text/css" href="style.css" />
-		<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="jCanvas.min.js"></script>
+        <script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="jCanvas.min.js"></script>
+        <script type="text/javascript" src="math.min.js"></script>
         <script type="text/javascript" src="master.js"></script>
         <script type="text/javascript" src="main.js"></script>
         <title>Slope Field Generator</title>
     </head>
-    <body><canvas id="field"></canvas></body>
+    <body>
+        <canvas id="field"></canvas>
+        <div id="controls">
+            <table>
+                <tr>
+                    <td>Equation:</td>
+                    <td>
+                        <input id="equation" type="text" value="-x/y" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Min x:</td>
+                    <td>
+                        <input id="minx" type="text" value="-10" />
+                    </td>
+                    <td>Max x:</td>
+                    <td>
+                        <input id="maxx" type="text" value="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Min y:</td>
+                    <td>
+                        <input id="miny" type="text" value="-10" />
+                    </td>
+                    <td>Max y:</td>
+                    <td>
+                        <input id="maxy" type="text" value="10" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="draw" class="button">Draw</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
 </html>

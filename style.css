@@ -19,3 +19,7 @@
 .down {
     background: linear-gradient(to bottom right, #686868, #A0A0A0);
 }
+.pair {
+display: inline-block;
+margin-right: 30px;
+}
