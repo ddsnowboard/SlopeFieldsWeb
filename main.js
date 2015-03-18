@@ -1,4 +1,4 @@
-function drawGrid(canvas, resolution) {
+function drawGrid(canvas, maxX, maxY, resolution) {
 	var STROKE_WIDTH = 2;
 	var STROKE_STYLE = "black";
 	var TICK_LENGTH = 10;
@@ -50,7 +50,7 @@ function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
 	var FILL_STYLE = "black";
 	var OFFSET = 15;
 	var FONT_SIZE = 8;
-	var FONT_FAMILY = "Verdana, Geneva, sans-serif"
+	var FONT_FAMILY = "Verdana, Geneva, sans-serif";
 		var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
 	for (var i = 0; i <= resolution; i++) {
@@ -88,13 +88,13 @@ $(document).ready(function () {
 	var canvas = document.getElementById("field");
 	canvas.height = $(window).height() * 0.8;
 	canvas.width = canvas.height;
-	drawGrid(jcanvas, RESOLUTION);
 	$("#draw").click(function () {
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
 		var eqn = math.compile($("#equation").val());
 		var minX = parseInt($("#minx").val());
 		var minY = parseInt($("#miny").val());
+		drawGrid(jcanvas, minX, maxX, minY, maxY, RESOLUTION);
 		graph(jcanvas, eqn, minX, maxX, minY, maxY, RESOLUTION);
 	});
 });
