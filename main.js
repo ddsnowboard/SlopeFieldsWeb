@@ -7,7 +7,7 @@ function drawLine(canvas, x1, y1, x2, y2) {
 		x1 : x1,
 		y1 : y1,
 		x2 : x2,
-		y2 : y2,
+		y2 : y2
 	});
 }
 function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
@@ -25,17 +25,13 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
 	drawLine(canvas, origin.x, 0, origin.x, height);
 
 	// Draw tick marks
-	// I NEED TO MAKE IT SO THAT IT STARTS ON THE LEFT EDGE, *ALWAYS* GOES THROUGH THE ORIGIN, AND THEN ENDS ON THE RIGHT SIDE. 
-	// I'M NOT EXACTLY SURE HOW TO DO THAT... 
-	for (var i = origin.x + minX * (width / (maxX - minX)); i <= origin.x + maxX * (width / (maxX - minX)); i += width / resolution) {
-		// var currx = origin.x + (i * (width/(maxX - minX)));
-		var currx = i;
-		console.log(i === origin.x);
-		drawLine(canvas, currx, origin.y - TICK_LENGTH, currx, origin.y + TICK_LENGTH);
-	}
-	// for (var i = 0; i <= resolution; i++) {
-	// drawLine(canvas, origin.x-TICK_LENGTH,i* (height/resolution), origin.x+TICK_LENGTH, i*(height/resolution));
+	// for (var i = origin.x + minX * (width / (maxX - minX)); i <= origin.x + maxX * (width / (maxX - minX)); i += width / (maxX - minX)) {
+		// drawLine(canvas, i, origin.y - TICK_LENGTH, i, origin.y + TICK_LENGTH);
 	// }
+	for (var i = origin.y + maxY * (height / (maxY - minY)); i <= origin.y + minY * (height / (maxY - minY)); i += height / (maxY - minY)) {
+		console.log(i);
+		drawLine(canvas, origin.x - TICK_LENGTH, i, origin.x + TICK_LENGTH, i);
+	}
 }
 function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
 	var STROKE_WIDTH = 2;
