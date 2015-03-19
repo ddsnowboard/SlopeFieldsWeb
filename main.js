@@ -1,3 +1,5 @@
+VERTICAL = 1;
+HORIZONTAL = 0;
 function drawLine(canvas, x1, y1, x2, y2) {
 	var STROKE_WIDTH = 2;
 	var STROKE_STYLE = "black";
@@ -10,27 +12,64 @@ function drawLine(canvas, x1, y1, x2, y2) {
 		y2 : y2
 	});
 }
+function drawTick(canvas, x, y, len, dir) {
+	var STROKE_WIDTH = 2;
+	var STROKE_STYLE = "black";
+	if (dir === VERTICAL) {
+		canvas.drawLine({
+			strokeStyle : STROKE_STYLE,
+			strokeWidth : STROKE_WIDTH,
+			x1 : x,
+			y1 : y + 0.5 * len,
+			x2 : x,
+			y2 : y - 0.5 * len
+		});
+	} else if (dir === HORIZONTAL) {
+		canvas.drawLine({
+			strokeStyle : STROKE_STYLE,
+			strokeWidth : STROKE_WIDTH,
+			x1 : x + 0.5 * len,
+			y1 : y,
+			x2 : x - 0.5 * len,
+			y2 : y
+		});
+	}
+}
 function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
-	var TICK_LENGTH = 10;
+	var TICK_LENGTH = 20;
 	var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
 	var origin = {
 		x : (Math.abs(minX) / (maxX - minX)) * width,
 		y : (Math.abs(maxY) / (maxY - minY)) * height
 	};
+	var fieldCoords = {
+		x : [],
+		y : []
+	};
+	var graphCoords = {
+		x : [],
+		y : []
+	};
 	// Draw horizontal line.
 	drawLine(canvas, 0, origin.y, width, origin.y);
 
 	// Draw vertical line.
 	drawLine(canvas, origin.x, 0, origin.x, height);
-
 	// Draw tick marks
-	// for (var i = origin.x + minX * (width / (maxX - minX)); i <= origin.x + maxX * (width / (maxX - minX)); i += width / (maxX - minX)) {
-		// drawLine(canvas, i, origin.y - TICK_LENGTH, i, origin.y + TICK_LENGTH);
-	// }
-	for (var i = origin.y + maxY * (height / (maxY - minY)); i <= origin.y + minY * (height / (maxY - minY)); i += height / (maxY - minY)) {
-		console.log(i);
-		drawLine(canvas, origin.x - TICK_LENGTH, i, origin.x + TICK_LENGTH, i);
+	var offsetX = Math.floor(((minX / (maxX - minX)) * resolution));
+	for (var i = 0; i <= resolution; i++) {
+		var currx = origin.x + ((i + offsetX) * (width / resolution));
+		fieldCoords.x.push(currx);
+		graphCoords.x.push(+((currx-origin.x)*((maxX-minX)/width)).toFixed(2));
+		drawTick(canvas, currx, origin.y, TICK_LENGTH, VERTICAL);
+	}
+	var offsetY = Math.floor(((maxY / (minY - maxY)) * resolution));
+	for (var i = 0; i <= resolution; i++) {
+		var curry = origin.y + ((i + offsetY) * (height / resolution));
+		fieldCoords.y.push(curry);
+		graphCoords.y.push(+((curry-origin.y)*((minY-maxY)/height)).toFixed(2));
+		drawTick(canvas, origin.x, curry, TICK_LENGTH, HORIZONTAL);
 	}
 }
 function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
