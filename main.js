@@ -35,10 +35,29 @@ function drawTick(canvas, x, y, len, dir) {
 		});
 	}
 }
+function drawText(canvas, x, y, text) {
+	var STROKE_WIDTH = 2;
+	var STROKE_STYLE = "black";
+	var FILL_STYLE = "black";
+	var FONT_SIZE = 8;
+	var FONT_FAMILY = "Verdana, Geneva, sans-serif";
+	canvas.drawText({
+		fillStyle : FILL_STYLE,
+		strokeStyle : STROKE_STYLE,
+		strokeWidth : STROKE_WIDTH,
+		fontFamily :
+		FONT_FAMILY,
+		fontSize : FONT_SIZE,
+		text : text,
+		x : x,
+		y : y
+	});
+}
 function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
 	var TICK_LENGTH = 20;
 	var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
+	// The absolute origin point, in terms of the HTML canvas object. 
 	var origin = {
 		x : (Math.abs(minX) / (maxX - minX)) * width,
 		y : (Math.abs(maxY) / (maxY - minY)) * height
@@ -61,15 +80,26 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
 	for (var i = 0; i <= resolution; i++) {
 		var currx = origin.x + ((i + offsetX) * (width / resolution));
 		fieldCoords.x.push(currx);
-		graphCoords.x.push(+((currx-origin.x)*((maxX-minX)/width)).toFixed(2));
+		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
 		drawTick(canvas, currx, origin.y, TICK_LENGTH, VERTICAL);
 	}
 	var offsetY = Math.floor(((maxY / (minY - maxY)) * resolution));
 	for (var i = 0; i <= resolution; i++) {
 		var curry = origin.y + ((i + offsetY) * (height / resolution));
 		fieldCoords.y.push(curry);
-		graphCoords.y.push(+((curry-origin.y)*((minY-maxY)/height)).toFixed(2));
+		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
 		drawTick(canvas, origin.x, curry, TICK_LENGTH, HORIZONTAL);
+	}
+
+	// Draw numbers
+	var OFFSET = 20;
+	for (var x = 0; x < fieldCoords.x.length; x++) {
+		drawText(canvas, fieldCoords.x[x], origin.y - OFFSET, graphCoords.x[x]);
+	}
+	for (var y = 0; y < fieldCoords.y.length; y++) {
+		if (graphCoords.y[y] !== 0) {
+			drawText(canvas, origin.x + OFFSET, fieldCoords.y[y], graphCoords.y[y]);
+		}
 	}
 }
 function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
