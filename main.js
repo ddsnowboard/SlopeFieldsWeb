@@ -24,28 +24,18 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution) {
 	// Draw vertical line.
 	drawLine(canvas, origin.x, 0, origin.x, height);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// Draw tick marks
-	// DRAW TICKS FROM ORIGIN NOT FROM EDGE, YOU LAZY BUM!
-	for (var i = 0; i <= resolution; i++) {
-		drawLine(canvas, i* (width/resolution), origin.y-TICK_LENGTH, i*(width/resolution), origin.y+TICK_LENGTH);
+	// I NEED TO MAKE IT SO THAT IT STARTS ON THE LEFT EDGE, *ALWAYS* GOES THROUGH THE ORIGIN, AND THEN ENDS ON THE RIGHT SIDE. 
+	// I'M NOT EXACTLY SURE HOW TO DO THAT... 
+	for (var i = origin.x + minX * (width / (maxX - minX)); i <= origin.x + maxX * (width / (maxX - minX)); i += width / resolution) {
+		// var currx = origin.x + (i * (width/(maxX - minX)));
+		var currx = i;
+		console.log(i === origin.x);
+		drawLine(canvas, currx, origin.y - TICK_LENGTH, currx, origin.y + TICK_LENGTH);
 	}
-	for (var i = 0; i <= resolution; i++) {
-		drawLine(canvas, origin.x-TICK_LENGTH,i* (height/resolution), origin.x+TICK_LENGTH, i*(height/resolution));
-	}
+	// for (var i = 0; i <= resolution; i++) {
+	// drawLine(canvas, origin.x-TICK_LENGTH,i* (height/resolution), origin.x+TICK_LENGTH, i*(height/resolution));
+	// }
 }
 function graph(canvas, eqn, minX, maxX, minY, maxY, resolution) {
 	var STROKE_WIDTH = 2;
