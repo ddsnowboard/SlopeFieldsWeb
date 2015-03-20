@@ -152,6 +152,8 @@ $(document).ready(function () {
 	var canvas = document.getElementById("field");
 	canvas.height = $(window).height() * 0.8;
 	canvas.width = $(window).width() * .5;
+	drawLine(jcanvas, 0, canvas.height/2, canvas.width, canvas.height/2);
+	drawLine(jcanvas, canvas.width/2,0,canvas.width/2, canvas.height);
 	$("#draw").click(function () {
 		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
