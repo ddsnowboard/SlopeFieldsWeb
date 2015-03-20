@@ -198,4 +198,9 @@ $(document).ready(function () {
 		var minY = parseInt($("#miny").val());
 		drawGrid(jcanvas, minX, maxX, minY, maxY, RESOLUTION, eqn);
 	});
+	$(document).keydown(function (event) {
+		if (event.which === 13) {
+			$("#draw").click();
+		}
+	});
 });
