@@ -139,8 +139,8 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	var SLOPE_STROKE_STYLE = "#0f0";
 	var SLOPE_STROKE_WIDTH = 2;
 	// These nested for loops draw the slopes. There are two `drawVector()`s to draw both halves. I need to have
-	// it be the right length, but also be centered at the right spot, so it draws the first half, and then the 
-	// other half from the same point. 
+	// it be the right length, but also be centered at the right spot, so it draws the first half, and then the
+	// other half from the same point.
 	for (var i = 0; i < fieldCoords.x.length; i++) {
 		var x = graphCoords.x[i];
 		var xCoord = fieldCoords.x[i];
@@ -169,26 +169,26 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 							y : y,
 							xy : x * y
 						})) * (180 / Math.PI)),
-				l1 : -1*TICK_LENGTH / 2
+				l1 : -1 * TICK_LENGTH / 2
 			});
 		}
 	}
 }
 $(document).ready(function () {
-	// This constant is the amount of total ticks on each axis. It can be increased by two at times, if 
+	// This constant is the amount of total ticks on each axis. It can be increased by two at times, if
 	// the endpoints aren't naturally drawn. See above.
 	var RESOLUTION = 20;
-	// This is the jquery/jcanvas wrapped canvas, which is used for everything except 
+	// This is the jquery/jcanvas wrapped canvas, which is used for everything except
 	// setting the height and width because it's almost impossible to do with jquery
-	// or jcanvas to my knowledge. 
+	// or jcanvas to my knowledge.
 	var jcanvas = $("#field");
 	var canvas = document.getElementById("field");
 	canvas.height = $(window).height() * 0.8;
 	canvas.width = $(window).width() * 0.5;
 	// These draw default lines. They get erased as soon as you click draw, but they make it clear what's going
-	// on at first glance, so I have them here. 
-	drawLine(jcanvas, 0, canvas.height / 2, canvas.width, canvas.height / 2);
-	drawLine(jcanvas, canvas.width / 2, 0, canvas.width / 2, canvas.height);
+	// on at first glance, so I have them here.
+	drawLine(jcanvas, 0, canvas.height / 2 - 10, canvas.width - 20, canvas.height / 2 - 10);
+	drawLine(jcanvas, canvas.width / 2 - 10, 0, canvas.width / 2 - 10, canvas.height - 20);
 	$("#draw").click(function () {
 		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
