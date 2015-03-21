@@ -192,6 +192,8 @@ $(document).ready(function () {
 		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
+		if(RegExp.match($("#equation").val(), /[A-Za-z]{2}/)){
+		console.log("worked");}
 		var eqn = math.compile($("#equation").val());
 		var minX = parseInt($("#minx").val());
 		var minY = parseInt($("#miny").val());
