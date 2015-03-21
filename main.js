@@ -152,7 +152,6 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 				e : Math.E,
 				x : x,
 				y : y,
-				xy : x * y
 			}
 			canvas.drawVector({
 				strokeWidth : SLOPE_STROKE_WIDTH,
