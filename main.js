@@ -167,7 +167,10 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 				a1 : 90 - (Math.atan(eqn.eval({
 							x : x,
 							y : y,
-							xy : x * y
+							xy : x * y,
+							// Apparently I didn't define p. Interesting...
+							p : Math.PI,
+							e : Math.E
 						})) * (180 / Math.PI)),
 				l1 : -1 * TICK_LENGTH / 2
 			});
