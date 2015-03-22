@@ -197,7 +197,7 @@ $(document).ready(function () {
 		{
 			eqn = eqn.replace(TWO_LETTERS, "$1*$2");
 		}
-		eqn = math.
+		eqn = math.compile(eqn);
 		var minX = parseInt($("#minx").val());
 		var minY = parseInt($("#miny").val());
 		drawGrid(jcanvas, minX, maxX, minY, maxY, RESOLUTION, eqn);
