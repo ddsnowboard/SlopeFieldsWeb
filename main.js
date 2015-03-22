@@ -1,6 +1,8 @@
 // Constants for drawTick() `dir` parameter.
-VERTICAL = 1;
-HORIZONTAL = 0;
+var VERTICAL = 1;
+var HORIZONTAL = 0;
+
+var PI_REPLACEMENT = "p";
 function drawLine(canvas, x1, y1, x2, y2) {
 	var STROKE_WIDTH = 2;
 	var STROKE_STYLE = "black";
@@ -148,11 +150,13 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 			var y = graphCoords.y[j];
 			var yCoord = fieldCoords.y[j];
 			var values = {
-				p : Math.PI,
 				e : Math.E,
 				x : x,
-				y : y,
-			}
+				y : y
+			};
+			// Javascript, I hate you. 
+			values[PI_REPLACEMENT] = Math.PI;
+			
 			canvas.drawVector({
 				strokeWidth : SLOPE_STROKE_WIDTH,
 				strokeStyle : SLOPE_STROKE_STYLE,
@@ -192,9 +196,8 @@ $(document).ready(function () {
 		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
-		var eqn = $("#equation").val();
-		while (TWO_LETTERS.test(eqn))
-		{
+		var eqn = $("#equation").val().replace("π", PI_REPLACEMENT);
+		while (TWO_LETTERS.test(eqn)) {
 			eqn = eqn.replace(TWO_LETTERS, "$1*$2");
 		}
 		eqn = math.compile(eqn);
@@ -205,6 +208,13 @@ $(document).ready(function () {
 	$(document).keydown(function (event) {
 		if (event.which === 13) {
 			$("#draw").click();
+		}
+	});
+	$("#equation").keyup(function (event) {
+		if ($(this).val().indexOf("pi") !== -1) {
+			var caret = $(this).caret();
+			$(this).val($(this).val().replace("pi", "π"));
+			$(this).caret(caret - 1);
 		}
 	});
 });
