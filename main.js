@@ -180,7 +180,7 @@ $(document).ready(function () {
 	// This constant is the amount of total ticks on each axis. It can be increased by two at times, if
 	// the endpoints aren't naturally drawn. See above.
 	var RESOLUTION = 20;
-	var TWO_LETTERS = /([A-Za-z])([A-Za-z])/;
+	var TWO_LETTERS = /([A-Za-z)])([(A-Za-z])/;
 	// This is the jquery/jcanvas wrapped canvas, which is used for everything except
 	// setting the height and width because it's almost impossible to do with jquery
 	// or jcanvas to my knowledge.
