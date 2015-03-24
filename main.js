@@ -3,6 +3,7 @@ var VERTICAL = 1;
 var HORIZONTAL = 0;
 
 var PI_REPLACEMENT = "p";
+var TICK_LENGTH = 20;
 function drawLine(canvas, x1, y1, x2, y2) {
 	var STROKE_WIDTH = 2;
 	var STROKE_STYLE = "black";
@@ -56,7 +57,6 @@ function drawText(canvas, x, y, text) {
 	});
 }
 function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
-	var TICK_LENGTH = 20;
 	// I put a 20 pixel buffer on these just so I don't bump into the edge all the time.
 	var height = canvas.height() - 20;
 	var width = canvas.width() - 20;
@@ -68,6 +68,10 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		x : -1 * (minX / (maxX - minX)) * width,
 		y : (maxY / (maxY - minY)) * height
 	};
+	var onEdge = {
+		y : maxX < 0 || minX > 0,
+		x : maxY < 0 || minY > 0
+	};
 	// These are the coordinates of tick marks (and later slopes) on the graph *in terms of on-screen pixels.*
 	var fieldCoords = {
 		x : [],
@@ -78,9 +82,11 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		x : [],
 		y : []
 	};
+
+	// This `TEXT_OFFSET` is not related to the above two. This is how far away from the line the text should be.
+	var TEXT_OFFSET = 20;
 	// These draw the axes.
 	drawLine(canvas, 0, origin.y, width, origin.y);
-	drawLine(canvas, origin.x, 0, origin.x, height);
 	// This is the amount of ticks that have to be before the origin point. It finds the proportion of the
 	// graph that is before the origin, and multiplies it by the amount of ticks to get the amount of ticks
 	// that have to be before the origin point.
@@ -96,6 +102,10 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
 		drawTick(canvas, currx, origin.y, TICK_LENGTH, VERTICAL);
 	}
+	if (!onEdge.y) {
+		drawLine(canvas, origin.x, 0, origin.x, height);
+	}
+
 	console.log({
 		fieldCoords : fieldCoords,
 		graphCoords : graphCoords
@@ -110,8 +120,6 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
 		drawTick(canvas, origin.x, curry, TICK_LENGTH, HORIZONTAL);
 	}
-	// This `TEXT_OFFSET` is not related to the above two. This is how far away from the line the text should be.
-	var TEXT_OFFSET = 20;
 
 	// These four if statements check if it will plot the endpoints automatically, and if not, they do it, so that
 	// you can have good confirmation that the x and y values you put in were reflected. Sometimes, in order to get a
