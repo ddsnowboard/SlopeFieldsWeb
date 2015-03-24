@@ -154,9 +154,9 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 				x : x,
 				y : y
 			};
-			// Javascript, I hate you. 
+			// Javascript, I hate you.
 			values[PI_REPLACEMENT] = Math.PI;
-			
+
 			canvas.drawVector({
 				strokeWidth : SLOPE_STROKE_WIDTH,
 				strokeStyle : SLOPE_STROKE_STYLE,
@@ -181,6 +181,9 @@ $(document).ready(function () {
 	// the endpoints aren't naturally drawn. See above.
 	var RESOLUTION = 20;
 	var TWO_LETTERS = /([A-Za-z)])([(A-Za-z])/;
+	var TWO_PARENS = /([)])([(])/;
+	var LETTER_PAREN = /([A-Za-z0-9])([(])|([)])([0-9A-Za-z])/;
+	var REGEXES = [TWO_LETTERS, TWO_PARENS, LETTER_PAREN];
 	// This is the jquery/jcanvas wrapped canvas, which is used for everything except
 	// setting the height and width because it's almost impossible to do with jquery
 	// or jcanvas to my knowledge.
@@ -197,8 +200,11 @@ $(document).ready(function () {
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
 		var eqn = $("#equation").val().replace("π", PI_REPLACEMENT);
-		while (TWO_LETTERS.test(eqn)) {
-			eqn = eqn.replace(TWO_LETTERS, "$1*$2");
+		for (var r = 0; r < REGEXES.length; r++) {
+			var regex = REGEXES[r];
+			while (regex.test(eqn)) {
+				eqn = eqn.replace(regex, "$1*$2");
+			}
 		}
 		eqn = math.compile(eqn);
 		var minX = parseInt($("#minx").val());
