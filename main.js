@@ -183,7 +183,7 @@ $(document).ready(function () {
 	// These regexes are used to put in asterisks where they are necessary. I loop through them before I let
 	// mathjs process the equation input. They must have two parenthetical groups that should have an asterisk
 	// put in between them if found, because that's what the for loop expects. They also must be added to REGEXES
-	// unless you make other arrangements for handling them. 
+	// unless you make other arrangements for handling them.
 	var TWO_LETTERS = /([A-Za-z)])([(A-Za-z])/;
 	var TWO_PARENS = /([)])([(])/;
 	var LETTER_PAREN = /([A-Za-z0-9])([(])|([)])([0-9A-Za-z])/;
