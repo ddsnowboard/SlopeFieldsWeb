@@ -63,8 +63,10 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	// This is the origin point, measured in on-screen pixels. If you put something at this point
 	// with javascript, it will go to the cross in the axes.
 	var origin = {
-		x : (Math.abs(minX) / (maxX - minX)) * width,
-		y : (Math.abs(maxY) / (maxY - minY)) * height
+		// This is negative because of the weirdness coming from x starting at the negative side
+		// as opposed to y starting from the positive side.
+		x : -1 * (minX / (maxX - minX)) * width,
+		y : (maxY / (maxY - minY)) * height
 	};
 	// These are the coordinates of tick marks (and later slopes) on the graph *in terms of on-screen pixels.*
 	var fieldCoords = {
@@ -94,6 +96,10 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
 		drawTick(canvas, currx, origin.y, TICK_LENGTH, VERTICAL);
 	}
+	console.log({
+		fieldCoords : fieldCoords,
+		graphCoords : graphCoords
+	});
 	// cf. above.
 	// Some of the signs and orders are switched because the y coordinates on the HTML canvas start
 	// at the top, at the highest y value on the graph, while the opposite is true of x.
