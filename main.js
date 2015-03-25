@@ -68,10 +68,6 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		x : -1 * (minX / (maxX - minX)) * width,
 		y : (maxY / (maxY - minY)) * height
 	};
-	var onEdge = {
-		y : maxX < 0 || minX > 0,
-		x : maxY < 0 || minY > 0
-	};
 	// These are the coordinates of tick marks (and later slopes) on the graph *in terms of on-screen pixels.*
 	var fieldCoords = {
 		x : [],
@@ -85,14 +81,21 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 
 	// This `TEXT_OFFSET` is not related to the above two. This is how far away from the line the text should be.
 	var TEXT_OFFSET = 20;
-	// These draw the axes.
-	drawLine(canvas, 0, origin.y, width, origin.y);
+	var EDGE_OFFSET = 5;
 	// This is the amount of ticks that have to be before the origin point. It finds the proportion of the
 	// graph that is before the origin, and multiplies it by the amount of ticks to get the amount of ticks
 	// that have to be before the origin point.
 	var offsetX = Math.floor(((minX / (maxX - minX)) * resolution));
 	// This draws each tick mark and puts the coordinates into their appropriate array (cf. fieldCoords
 	// and graphCoords).
+	var tickY;
+	if (origin.y < 0) {
+		tickY = EDGE_OFFSET;
+	} else if (origin.y > height) {
+		tickY = height;
+	} else {
+		tickY = origin.y;
+	}
 	for (var i = 0; i <= resolution; i++) {
 		var currx = origin.x + ((i + offsetX) * (width / resolution));
 		fieldCoords.x.push(currx);
@@ -100,54 +103,87 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		// point inaccuracy. I wouldn't care, but these are getting printed, and I hate when that kind of
 		// stuff comes up to the user.
 		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
-		drawTick(canvas, currx, origin.y, TICK_LENGTH, VERTICAL);
-	}
-	if (!onEdge.y) {
-		drawLine(canvas, origin.x, 0, origin.x, height);
+		drawTick(canvas, currx, tickY, TICK_LENGTH, VERTICAL);
 	}
 
-	console.log({
-		fieldCoords : fieldCoords,
-		graphCoords : graphCoords
-	});
+	if (origin.x > 0 && origin.x < width) {
+		drawLine(canvas, origin.x, 0, origin.x, height);
+	} else if (origin.x < 0) {
+		drawLine(canvas, EDGE_OFFSET, 0, EDGE_OFFSET, height);
+	} else if (origin.x > width) {
+		drawLine(canvas, width, 0, width, height);
+	}
+	if (origin.y > 0 && origin.y < height) {
+		drawLine(canvas, 0, origin.y, width, origin.y);
+	} else if (origin.y < 0) {
+		drawLine(canvas, 0, EDGE_OFFSET, width, EDGE_OFFSET);
+	} else if (origin.y > width) {
+		drawLine(canvas, 0, height, width, height);
+	}
 	// cf. above.
 	// Some of the signs and orders are switched because the y coordinates on the HTML canvas start
 	// at the top, at the highest y value on the graph, while the opposite is true of x.
 	var offsetY = Math.floor(((maxY / (minY - maxY)) * resolution));
+	var tickX;
+	if (origin.x < 0) {
+		tickX = EDGE_OFFSET;
+	} else if (origin.x > width) {
+		tickX = width;
+	} else {
+		tickX = origin.x;
+	}
 	for (var i = 0; i <= resolution; i++) {
 		var curry = origin.y + ((i + offsetY) * (height / resolution));
 		fieldCoords.y.push(curry);
 		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
-		drawTick(canvas, origin.x, curry, TICK_LENGTH, HORIZONTAL);
+		drawTick(canvas, tickX, curry, TICK_LENGTH, HORIZONTAL);
 	}
-
-	// These four if statements check if it will plot the endpoints automatically, and if not, they do it, so that
-	// you can have good confirmation that the x and y values you put in were reflected. Sometimes, in order to get a
-	// tick mark at the origin at all times, there is not one at the edge, and this fixes that.
-	if (graphCoords.x[0] !== minX) {
-		drawLine(canvas, 0, origin.y - TICK_LENGTH / 2, 0, origin.y + TICK_LENGTH / 2);
-		drawText(canvas, 0, origin.y - TEXT_OFFSET, minX);
+	var textY;
+	if (origin.y < 0) {
+		textY = EDGE_OFFSET + TEXT_OFFSET;
+	} else if (origin.y > height) {
+		textY = height - TEXT_OFFSET;
+	} else {
+		textY = origin.y - TEXT_OFFSET;
 	}
-	if (graphCoords.x[graphCoords.x.length - 1] !== maxX) {
-		drawText(canvas, width, origin.y - TEXT_OFFSET, maxX);
-		drawLine(canvas, width, origin.y - TICK_LENGTH / 2, width, origin.y + TICK_LENGTH / 2);
+	var textX;
+	if (origin.x < 0) {
+		textX = EDGE_OFFSET + TEXT_OFFSET;
+	} else if (origin.x > width) {
+		textX = width - TEXT_OFFSET;
+	} else {
+		textX = origin.x + TEXT_OFFSET;
 	}
-	if (graphCoords.y[0] !== maxY) {
-		drawText(canvas, origin.x + TEXT_OFFSET, 0, maxY);
-		drawLine(canvas, origin.x - TICK_LENGTH / 2, 0, origin.x + TICK_LENGTH / 2, 0);
-	}
-	if (graphCoords.y[graphCoords
-			.length - 1] !== minY) {
-		drawText(canvas, origin.x + TEXT_OFFSET, height, minY);
-		drawLine(canvas, origin.x - TICK_LENGTH / 2, height, origin.x + TICK_LENGTH / 2, height);
+	if (textX === origin.x && textY === origin.y) {
+		// These four if statements check if it will plot the endpoints automatically, and if not, they do it, so that
+		// you can have good confirmation that the x and y values you put in were reflected. Sometimes, in order to get a
+		// tick mark at the origin at all times, there is not one at the edge, and this fixes that.
+		if (graphCoords.x[0] !== minX) {
+			drawLine(canvas, 0, origin.y - TICK_LENGTH / 2, 0, origin.y + TICK_LENGTH / 2);
+			drawText(canvas, 0, origin.y - TEXT_OFFSET, minX);
+		}
+		if (graphCoords.x[graphCoords.x.length - 1] !== maxX) {
+			drawText(canvas, width, origin.y - TEXT_OFFSET, maxX);
+			drawLine(canvas, width, origin.y - TICK_LENGTH / 2, width, origin.y + TICK_LENGTH / 2);
+		}
+		if (graphCoords.y[0] !== maxY) {
+			drawText(canvas, origin.x + TEXT_OFFSET, 0, maxY);
+			drawLine(canvas, origin.x - TICK_LENGTH / 2, 0, origin.x + TICK_LENGTH / 2, 0);
+		}
+		if (graphCoords.y[graphCoords
+				.length - 1] !== minY) {
+			drawText(canvas, origin.x + TEXT_OFFSET, height, minY);
+			drawLine(canvas, origin.x - TICK_LENGTH / 2, height, origin.x + TICK_LENGTH / 2, height);
+		}
 	}
 	// This draws the rest of the text.
 	for (var x = 0; x < fieldCoords.x.length; x++) {
-		drawText(canvas, fieldCoords.x[x], origin.y - TEXT_OFFSET, graphCoords.x[x]);
+		drawText(canvas, fieldCoords.x[x], textY, graphCoords.x[x]);
 	}
+
 	for (var y = 0; y < fieldCoords.y.length; y++) {
 		if (graphCoords.y[y] !== 0) {
-			drawText(canvas, origin.x + TEXT_OFFSET, fieldCoords.y[y], graphCoords.y[y]);
+			drawText(canvas, textX, fieldCoords.y[y], graphCoords.y[y]);
 		}
 	}
 	// I have different constants for the slope lines because I wanted to bug Jay by making them green and I didn't know
