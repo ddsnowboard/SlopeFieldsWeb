@@ -110,12 +110,21 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
 		drawTick(canvas, currx, tickY, TICK_LENGTH, VERTICAL);
 	}
-
+var tickX;
+	if (origin.x < 0) {
+		tickX = EDGE_OFFSET;
+	} else if (origin.x > width) {
+		tickX = width;
+	} else {
+		tickX = origin.x;
+	}
+	// CURRY IS NAN. WHY????
 	// This draws the tick marks and populates the y part of the coordinate lists.
 	for (var i = 0; i <= resolution; i++) {
 		var curry = origin.y + ((i + offsetY) * (height / resolution));
 		fieldCoords.y.push(curry);
 		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
+		console.log({tickx : tickX, curry : curry});
 		drawTick(canvas, tickX, curry, TICK_LENGTH, HORIZONTAL);
 	}
 
@@ -131,7 +140,7 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		drawLine(canvas, 0, origin.y, width, origin.y);
 	} else if (origin.y < 0) {
 		drawLine(canvas, 0, EDGE_OFFSET, width, EDGE_OFFSET);
-	} else if (origin.y > width) {
+	} else if (origin.y > height) {
 		drawLine(canvas, 0, height, width, height);
 	}
 
@@ -139,14 +148,6 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	// Some of the signs and orders are switched because the y coordinates on the HTML canvas start
 	// at the top, at the highest y value on the graph, while the opposite is true of x.
 	var offsetY = Math.floor(((maxY / (minY - maxY)) * resolution));
-	var tickX;
-	if (origin.x < 0) {
-		tickX = EDGE_OFFSET;
-	} else if (origin.x > width) {
-		tickX = width;
-	} else {
-		tickX = origin.x;
-	}
 	var textY;
 	if (origin.y < 0) {
 		textY = EDGE_OFFSET + TEXT_OFFSET;
