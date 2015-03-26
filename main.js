@@ -79,15 +79,17 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		y : []
 	};
 
-	// This `TEXT_OFFSET` is not related to the above two. This is how far away from the line the text should be.
+	// This is how far away from the line the text should be.
 	var TEXT_OFFSET = 20;
+	// This is to give me a little breathing room for anything I draw right on the edge of the screen.
 	var EDGE_OFFSET = 5;
+
 	// This is the amount of ticks that have to be before the origin point. It finds the proportion of the
 	// graph that is before the origin, and multiplies it by the amount of ticks to get the amount of ticks
 	// that have to be before the origin point.
 	var offsetX = Math.floor(((minX / (maxX - minX)) * resolution));
-	// This draws each tick mark and puts the coordinates into their appropriate array (cf. fieldCoords
-	// and graphCoords).
+
+	// tickY and tickX prevent issues from arising due to the origin being off screen because only one side of an axis is being shown.
 	var tickY;
 	if (origin.y < 0) {
 		tickY = EDGE_OFFSET;
@@ -96,6 +98,9 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	} else {
 		tickY = origin.y;
 	}
+
+	// This draws each tick mark and puts the coordinates into their appropriate array (cf. fieldCoords
+	// and graphCoords).
 	for (var i = 0; i <= resolution; i++) {
 		var currx = origin.x + ((i + offsetX) * (width / resolution));
 		fieldCoords.x.push(currx);
@@ -106,6 +111,15 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		drawTick(canvas, currx, tickY, TICK_LENGTH, VERTICAL);
 	}
 
+	// This draws the tick marks and populates the y part of the coordinate lists.
+	for (var i = 0; i <= resolution; i++) {
+		var curry = origin.y + ((i + offsetY) * (height / resolution));
+		fieldCoords.y.push(curry);
+		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
+		drawTick(canvas, tickX, curry, TICK_LENGTH, HORIZONTAL);
+	}
+
+	// This draws the axes, adjusting for if they are off-screen.
 	if (origin.x > 0 && origin.x < width) {
 		drawLine(canvas, origin.x, 0, origin.x, height);
 	} else if (origin.x < 0) {
@@ -120,6 +134,7 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	} else if (origin.y > width) {
 		drawLine(canvas, 0, height, width, height);
 	}
+
 	// cf. above.
 	// Some of the signs and orders are switched because the y coordinates on the HTML canvas start
 	// at the top, at the highest y value on the graph, while the opposite is true of x.
@@ -131,12 +146,6 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		tickX = width;
 	} else {
 		tickX = origin.x;
-	}
-	for (var i = 0; i <= resolution; i++) {
-		var curry = origin.y + ((i + offsetY) * (height / resolution));
-		fieldCoords.y.push(curry);
-		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
-		drawTick(canvas, tickX, curry, TICK_LENGTH, HORIZONTAL);
 	}
 	var textY;
 	if (origin.y < 0) {
@@ -154,6 +163,8 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 	} else {
 		textX = origin.x + TEXT_OFFSET;
 	}
+
+	// REFACTOR THIS TO WORK WITH THE NEW FEATURES THAT DETECT IF THE AXIS IS OFF-SCREEN.
 	if (textX === origin.x && textY === origin.y) {
 		// These four if statements check if it will plot the endpoints automatically, and if not, they do it, so that
 		// you can have good confirmation that the x and y values you put in were reflected. Sometimes, in order to get a
@@ -186,6 +197,7 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 			drawText(canvas, textX, fieldCoords.y[y], graphCoords.y[y]);
 		}
 	}
+
 	// I have different constants for the slope lines because I wanted to bug Jay by making them green and I didn't know
 	// if the numbers I had would be too big or small.
 	var SLOPE_STROKE_STYLE = "#0f0";
