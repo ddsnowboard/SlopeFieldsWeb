@@ -124,7 +124,6 @@ var tickX;
 		var curry = origin.y + ((i + offsetY) * (height / resolution));
 		fieldCoords.y.push(curry);
 		graphCoords.y.push( + ((curry - origin.y) * ((minY - maxY) / height)).toFixed(2));
-		console.log(offsetY);
 		drawTick(canvas, tickX, curry, TICK_LENGTH, HORIZONTAL);
 	}
 
