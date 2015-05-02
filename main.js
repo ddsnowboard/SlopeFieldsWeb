@@ -110,7 +110,7 @@ function drawGrid(canvas, minX, maxX, minY, maxY, resolution, eqn) {
 		graphCoords.x.push( + ((currx - origin.x) * ((maxX - minX) / width)).toFixed(2));
 		drawTick(canvas, currx, tickY, TICK_LENGTH, VERTICAL);
 	}
-var tickX;
+	var tickX;
 	if (origin.x < 0) {
 		tickX = EDGE_OFFSET;
 	} else if (origin.x > width) {
@@ -261,9 +261,19 @@ $(document).ready(function () {
 	drawLine(jcanvas, 0, canvas.height / 2 - 10, canvas.width - 20, canvas.height / 2 - 10);
 	drawLine(jcanvas, canvas.width / 2 - 10, 0, canvas.width / 2 - 10, canvas.height - 20);
 	$("#draw").click(function () {
-		jcanvas.clearCanvas();
 		var maxX = parseInt($("#maxx").val());
 		var maxY = parseInt($("#maxy").val());
+		var minX = parseInt($("#minx").val());
+		var minY = parseInt($("#miny").val());
+		if (minY == maxY) {
+			alert("The minimum and maximum y values can't be the same.");
+			return;
+		} else if (minX == maxX) {
+			alert("The minimum and maximum x values can't be the same.");
+			return;
+		}
+		// TODO: ADD MORE INPUT CHECKING TO MAKE SURE THAT THE MIN ISN'T MORE THAN THE MAX. 
+		jcanvas.clearCanvas();
 		var eqn = $("#equation").val().replace("π", PI_REPLACEMENT);
 		for (var r = 0; r < REGEXES.length; r++) {
 			var regex = REGEXES[r];
@@ -272,8 +282,6 @@ $(document).ready(function () {
 			}
 		}
 		eqn = math.compile(eqn);
-		var minX = parseInt($("#minx").val());
-		var minY = parseInt($("#miny").val());
 		drawGrid(jcanvas, minX, maxX, minY, maxY, RESOLUTION, eqn);
 	});
 	$(document).keydown(function (event) {
