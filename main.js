@@ -269,14 +269,14 @@ $(document).ready(function() {
     var maxY = parseInt($("#maxy").val());
     var minX = parseInt($("#minx").val());
     var minY = parseInt($("#miny").val());
-    if (minY == maxY) {
-      alert("The minimum and maximum y values can't be the same.");
+    // Input checking... 
+    if (minX >= maxX) {
+      alert("The minimum X must be less than the maximum X");
       return;
-    } else if (minX == maxX) {
-      alert("The minimum and maximum x values can't be the same.");
+    } else if (minY >= maxY) {
+      alert("The minimum Y must be less than the maximum Y");
       return;
     }
-    // TODO: ADD MORE INPUT CHECKING TO MAKE SURE THAT THE MIN ISN'T MORE THAN THE MAX.
     jcanvas.clearCanvas();
     var eqn = $("#equation").val().replace("π", PI_REPLACEMENT);
     for (var r = 0; r < REGEXES.length; r++) {
